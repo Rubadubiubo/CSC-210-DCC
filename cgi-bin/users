@@ -1,0 +1,6 @@
+users
+
+
+
+
+0. unique index varchar username   |   1. password (salted passwords)   |   2. salt (salt)

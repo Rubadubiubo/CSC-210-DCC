@@ -1,0 +1,9 @@
+.error {
+	font-weight: bold;
+	color: red;
+}
+
+.vertical-form-input {
+	display: block;
+	margin-bottom: 20px;
+}

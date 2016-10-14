@@ -7,47 +7,39 @@
 	<link rel="stylesheet" type="text/css" href="css/dccstyles.css">
 	<!-- add jquery -->
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-	<title>Login</title>
+	<title>Create Account</title>
 </head>
 
 <body>
-	<script>  // adds error message if login was not successful
+	<script>  // adds error message if username is taken
 		$(function() {
 			if (window.location.href.indexOf("status=failed") != -1) {
 				// the name-value pair is in the url: add the failure message
-				$('#login-error').text("Error: username or password is incorrect.  Please try again.")
+				$('#account-creation-error').text("Error: username is already taken.  Please try again.")
 			} else {
-				$('#login-error').text("");
+				$('#account-creation-error').text("");
 			}
 		});
 	</script>
-
-	<h1>Login</h1>
-	<p id="login-error" class="error"></p>
-	<form id="login" method="post" action="cgi-bin/login.py">
-		<label for="username">Username: </label>
+	<p id="account-creation-error" class="error">
+	<form id="account_info">
 		<input type="text" name="username" id="username" class="vertical-form-input">
-
-		<label for="password">Password: </label>
 		<input type="password" name="password" id="password" class="vertical-form-input">
-
-		<input type="submit" value="Login">
+		<input type="submit" value="Create Account">
 	</form>
-	<!-- error messages to be set if there is an error -->
 	<p id="username-error" class="error"></p>
 	<p id="password-error" class="error"></p>
-
 	<script>
 		$(function() {
 			$('#login').submit(function(event) {
-				if ($('#username').val() === "") {  // field is empty
+				var pswd = $('#password').val()
+				if ($('#username').val() === "") {
 					$('#username-error').text("Username field is empty.");
-					event.preventDefault();  // stop form from being submitted
+					event.preventDefault();
 				} else {
 					$('#username-error').text("");
 				}
-
-				if ($('#password').val() === "") {
+				if (pswd === "") {
 					$('#password-error').text("Password field is empty.");
 					event.preventDefault();
 				} else {
@@ -60,4 +52,6 @@
 </body>
 
 </html>
+
+
 

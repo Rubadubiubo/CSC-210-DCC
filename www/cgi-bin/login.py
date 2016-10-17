@@ -5,6 +5,8 @@ import cgitb
 import mysql.connector
 import hashlib
 
+import home.generateUserAccountPage  # function creating the home page
+
 cgitb.enable()
 
 def authenticate(username, password):
@@ -51,20 +53,7 @@ def main():
 	password = login_data['pass'].value
 
 	if authenticate(username, password):
-		print '''
-		Content-type: text/html\r\n\r\n
-		<html lang="en-us">
-		<head>
-			<meta charset="utf-8">
-			<meta name="author" content="DCC, Inc.">
-			<link rel="stylesheet" href="css/dccstyles.css">
-			<title>Message In A Bottle</title>
-		</head>
-		<body>
-		'''
-		print '<p>Welcome, ' + username + '!'
-		# probably more to add here, idk
-		print '</body> </html>'
+		generateUserAccountPage(username)
 
 	else:  # redirect back to the login page with a name-value pair
 		print "Location: login.html?status=failed"

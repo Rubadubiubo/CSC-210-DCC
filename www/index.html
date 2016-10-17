@@ -6,19 +6,33 @@
 	<meta charset="utf-8">
 	<meta name="author" content="DCC, Inc.">
 	<link rel="stylesheet" href="css/dccstyles.css">
-	<title>Home</title>
+	<link rel="shortcut icon" href="images/favicon.png">
+	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	<title>Ocean - Welcome!</title>
 </head>
 
 <body>
-	<!-- Will be replaced with a logo once I have time to do that -->
-	<h1 class="ocean-text">Ocean</h1>
-	<p class="ocean-text">Welcome to Ocean!  Click the links below to log in, or create an account if you've never
-		been here before.</p>
-	<ul>
-		<li><a href="login.html">Login</a></li>
-		<li><a href="create_account.html">Create Account</a></li>
-	</ul>
-	
+	<header>
+		<div id="ocean-logo">
+			<object id="ocean-logo" type="image/svg+xml" data="images/richie_logo1.svg">
+				<img id="ocean-logo-fallback" src="images/richie_logo1.png" alt="Ocean Logo">
+			</object>
+		</div> <!-- ocean-logo -->
+		<nav>
+			<ul>
+				<li><a href="login.html">Login</a></li>
+				<li><a href="create_account.html">Sign Up</a></li>
+				<li><a href="learn_more.html">Learn More</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<div class="content">
+		<h1>Welcome to Ocean!</h1>
+		<p>Welcome to Ocean, a free, anonymous, user-driven messaging and chat experience.  Click the link above to log in, or if you've never been here before, create an account and start exploring the seven seas in seconds!</p>
+	</div>  <!-- content -->
+
+	<script src="js/nav-handler.js"></script>
 </body>
 
 </html>

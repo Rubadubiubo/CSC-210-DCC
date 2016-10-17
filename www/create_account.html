@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="author" content="DCC, Inc.">
 	<link rel="stylesheet" type="text/css" href="css/dccstyles.css">
+	<link rel="shortcut icon" href="images/favicon.png">
 	<!-- add jquery -->
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 	<title>Create Account</title>
@@ -21,9 +22,13 @@
 			}
 		});
 	</script>
+
+	<h1>Create Account</h1>
 	<p id="account-creation-error" class="error">
 	<form method="post" id="account_info" action="cgi-bin/signup.py">
+		<label for="username">Username: </label>
 		<input type="text" name="username" id="username" class="vertical-form-input">
+		<label for="password">Password: </label>
 		<input type="password" name="password" id="password" class="vertical-form-input">
 		<input type="submit" value="Create Account">
 	</form>

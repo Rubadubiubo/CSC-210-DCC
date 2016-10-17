@@ -1,6 +1,72 @@
+body {
+	margin-left: 0;
+	margin-right: 0;
+	font-family: arial, helvetica, sans-serif;
+	min-width: 450px;
+	color: #000066;
+}
+
+header {
+	background-color: #ffffcc;
+	border-top: 1px solid #000066;
+	border-bottom: 1px solid #000066;
+	/*position: absolute;
+	top: 0;
+	width: 100%;
+	left: 0;
+	margin-left: 0;*/
+	margin-left:0;
+	margin-right:0;
+	left: 0;
+	width: 100%;
+}
+
+header > * {
+	display: inline-block;
+	vertical-align: middle;
+	margin-bottom: 0;
+}
+
+nav a {
+	text-decoration: none;
+	font-size: 14pt;
+	font-weight: bold;
+	color: #000066
+}
+
+nav a:hover {  /* Special selector: affects the color of anchor text when hovered over; */
+	color: #00cccc;
+}
+
+
+nav li {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+nav ul {
+	list-style-type: none;
+	margin: 0 auto;
+	padding-left: 15px;
+	vertical-align: middle;
+	height: 100%;
+
+}
+
+.content {  /* offers padding to the content of the page (body has no padding as it affects the header) */
+	padding: 0 15px 15px 15px;
+	max-width: 760px;
+	margin: 0 auto;
+}
+
 .error {
 	font-weight: bold;
 	color: red;
+}
+
+#ocean-logo {
+	max-width: 225px;
+	margin-left: 5px;
 }
 
 .vertical-form-input {
@@ -8,6 +74,5 @@
 	margin-bottom: 20px;
 }
 
-.ocean-text {
-	color: blue;
-}
+
+

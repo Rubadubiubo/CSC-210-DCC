@@ -1,4 +1,4 @@
-#!C:/Python27/python.exe
+#!/usr/bin/python2.7
 
 
 #CC
@@ -95,12 +95,11 @@ password = form['password'].value
 
 if dupliCheck(username):
     insert_user(username, password)
-    cookie_handler.generateLoginCookieHeader()
+    cookie_handler.generateLoginCookieHeader(username)
     generateUserAccountPage(username)
-
 else:
     print("Content-type: text/html\n\n")
-    print("Authentication Failed")
+    print("Username already taken.")
    
 
 

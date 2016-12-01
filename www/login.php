@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+
+<?php
+	$cookie_name = "previous_login";
+	if(isset($_COOKIE[$cookie_name])) {
+		header('Location: /index.php');
+	} else {} 
+	?>
 <html lang="en-us">
 
 <head>

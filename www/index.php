@@ -18,7 +18,7 @@
 	$cookie_name = "previous_login";
 	if(isset($_COOKIE[$cookie_name])) {
 		header('Location: /testtheme.php');
-		// include "inc/header_logged.inc";
+		// include "inc/header_logged_tyler.inc";
 	} else {
 		include "inc/header_not_logged.inc";
 } ?>

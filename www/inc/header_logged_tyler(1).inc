@@ -84,8 +84,8 @@
 								</h2>
 
 								<blockquote>
-									<p>Welcome To Ocean</p>
-									<p>This is your feed, where you can find your favorite bottles, or pull in new ones</p>
+									<p>PART O THE SHIP PART O THE CREW</p>
+									<p><img src="http://freedesignfile.com/upload/2012/12/pirate_02.jpg"></img></p>
 								</blockquote>
 							</div>
 
@@ -166,7 +166,6 @@
 						type: "GET",
 						url: "cgi-bin/recMessage.py",
 						success: function(data, status) {
-								$("body").append(data);
 								var dataArray = data.split(",");
 								var message = dataArray[0];
 								var title = dataArray[1];
@@ -221,7 +220,8 @@
 							$("#submission_status").html("Message cast!").css({"color":"#8F8"}).show().fadeOut(4000);
 							$("#confirm_send").hide().fadeIn("slow");
 						},
-						error: function() {
+						error: function(data) {
+							console.log(data);
 							// alert("Unable to complete request.");
 							$("#submission_status").html("Request failed!").css({"color":"#bf5454"}).show().fadeOut(4000);
 							$("body").append(data); //REMOVE WHEN DONE TESTING; WILL ADD CGIB ERROR TO HTML BODY

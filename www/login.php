@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+
+<?php
+	$cookie_name = "previous_login";
+	if(isset($_COOKIE[$cookie_name])) {
+		header('Location: /index.php');
+	} else {} 
+	?>
 <html lang="en-us">
 
 <head>
@@ -86,6 +93,7 @@
 						url: "/cgi-bin/login.py",
 						data: {"username":username, "password":password},
 						success: function(data, status) {
+							$('body').append(data);
 							data = data.replace(/(\r\n|\n|\r)/gm,""); //Strip newlines from return data
 							if (data == "true") {window.location.reload(true);}
 							else if (data == "false") {wrongCredentials();} //See function up top

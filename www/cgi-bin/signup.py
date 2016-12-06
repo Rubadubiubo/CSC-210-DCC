@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!C:/Python27/python.exe
 
 
 #CC
@@ -30,7 +30,7 @@ def insert_user(username, password):
     hasher.update(salt)
     encrypted = hasher.hexdigest()
 
-    conn = mysql.connector.connect(user='this', database='Ocean')
+    conn = mysql.connector.connect(user='DCC', password='abcd', database='Ocean')
     cursor = conn.cursor()
     add_user = ("""INSERT INTO Users
             (UserName, Pass, Salt, UID)
@@ -52,7 +52,7 @@ def dupliCheck(username):
 
 
     try:
-        conn = mysql.connector.connect(user='this', database='Ocean')
+        conn = mysql.connector.connect(user='DCC', password='abcd', database='Ocean')
     
     except mysql.connector.Error as err:
         print("Content-type: text/html\n\n")

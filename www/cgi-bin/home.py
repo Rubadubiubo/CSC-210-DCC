@@ -1,9 +1,5 @@
 #!C:/Python27/python.exe
-'''
-Script forming the page if user successfully authenticated.
 
-There shouldn't be a need to import cgi or cgitb because the scripts using it should.
-'''
 import datetime
 
 cookie_time_string = "%a, %d-%b-%Y %T UTC"  # format for cookie expiration time

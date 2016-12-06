@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!C:/Python27/python.exe
 
 import os, cgi, cgitb; cgitb.enable()
 

@@ -26,7 +26,13 @@
 	</script>
 	-->
 
-	<?php include "inc/header_not_logged.inc"; ?>
+	<?php
+	$cookie_name = "previous_login";
+	if(isset($_COOKIE[$cookie_name])) {
+		header('Location: /testtheme.php');
+	} else {
+		include "inc/header_not_logged.inc"; 
+	} ?>
 
 	<div class="content">
 		<h1>Create Account</h1>

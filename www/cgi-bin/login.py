@@ -1,5 +1,5 @@
-#!/usr/bin/python2.7
-#HASHBANG CHANGED FOR LINUX COMPATIBILITY
+#!C:/Python27/python.exe
+#HASHBANG CHANGED FOR CC COMPATIBILITY
 
 import cgi
 import cgitb

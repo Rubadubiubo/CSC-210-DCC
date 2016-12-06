@@ -84,13 +84,12 @@
 								</h2>
 
 								<blockquote>
-									<p>PART O THE SHIP PART O THE CREW</p>
-									<p><img src="http://freedesignfile.com/upload/2012/12/pirate_02.jpg"></img></p>
+									<p>Welcome to Ocean!</p>
+									<p>Get in and have a nice swim</p>
 								</blockquote>
 							</div>
 
 							<div class="post-meta meta">
-								Posted on 9/11
 							</div>
 						</div>
 					</li>
@@ -143,7 +142,89 @@
 		// });
 
 		// $('.post-container .title').click(eventHandler).find(".post-container .title").hide();
+				$(function pullReplies(RepId, title){
+			var reps = RepId;
+			var test = true;
+			//while(test){
+				$.ajax({
+						type: "POST",
+						dataType: "json",
+						data: {"RepId":reps},
+						url: "cgi-bin/recReply.py",
+						success: function(dataR, status) {
+								test = false;
+								var title = dataR["Title"];
+								var message = dataR["Data"];
+								var user = dataR["UnameSent"];
+								var time = dataR["Posttime"];
+								var rep = dataR["ReplyId"]
+								
+								if (title == "") {
+									title = "---";
+								}
+								if (user == "") {
+									user = "Anonymous";
+								}
 
+								
+								var titleText = title+"	|	By: "+user;
+								var dateText = time;
+								reps = rep;
+								if(rep != "NULL"){
+									test = true;
+								}
+								$(generatePost(titleText, message, dateText)).prependTo("#post-container").hide().fadeIn('slow'); //Generate HTML to display recieved data
+								
+								
+							},
+							error: function(dataR, status) {
+								test = false;
+								alert("Unable to complete request.");
+							}
+			
+				});
+				
+			
+			
+			
+		});
+		
+		$(function pullMsg(){
+			$.ajax({
+						type: "GET",
+						dataType: "json",
+						url: "cgi-bin/recMessage.py",
+						success: function(data, status) {
+								var title = data["Title"];
+								var message = data["Data"];
+								var user = data["UnameSent"];
+								var time = data["Posttime"];
+								var rep = data["ReplyId"]
+								
+								if (title == "") {
+									title = "---";
+								}
+								if (user == "") {
+									user = "Anonymous";
+								}
+
+								
+								var titleText = title+"	|	By: "+user;
+								var dateText = time;
+								$(generatePost(titleText, message, dateText)).prependTo("#post-container").hide().fadeIn('slow'); //Generate HTML to display recieved data
+								if(rep != "NULL"){
+									pullReplies(rep);
+								}
+								
+							},
+							error: function(data, status) {
+								alert("Unable to complete request.");
+							}
+			});
+		});
+		
+
+		
 		$(function(){
 
 			// $(document).on('click', ".post-container .title", function(event) {
@@ -162,35 +243,7 @@
 						$("#message").focus();
 						break;
 					case "Recieve a bottle": //Query recMessage.py to query database to get new posts
-					$.ajax({
-						type: "GET",
-						dataType: "json",
-						url: "cgi-bin/recMessage.py",
-						success: function(data, status) {
-								var title = data["Title"];
-								var message = data["Data"];
-								var user = data["UnameSent"];
-								var time = data["Posttime"];
-								
-								if (title == "") {
-									title = "---";
-								}
-								if (user == "") {
-									user = "Anonymous";
-								}
-
-								
-								var titleText = title+"	|	By: "+user;
-								var dateText = time;
-								$(generatePost(titleText, message, dateText)).prependTo("#post-container").hide().fadeIn('slow'); //Generate HTML to display recieved data
-							},
-							error: function(data, status) {
-								alert("Unable to complete request.");
-							}
-						});
-						break;
-					case "DEARGODLETMELIVE": //O Great Roko, please have mercy
-						window.location.href = option_value;
+						pullMsg();
 						break;
 					case "Learn More": //Redirect to learn more
 						window.location.href = option_value;

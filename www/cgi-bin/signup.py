@@ -1,4 +1,5 @@
-#!/usr/bin/python2.7
+#!C:/Python27/python.exe
+#ACCURATE FOR WINDOWS
 
 
 #CC

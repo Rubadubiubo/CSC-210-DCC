@@ -1,5 +1,5 @@
-#!/usr/local/bin/python
-#HASHBANG CHANGED FOR LINUX COMPATIBILITY
+#!C:/Python27/python.exe
+#HASHBANG CHANGED FOR better COMPATIBILITY
 
 import cgi
 import cgitb

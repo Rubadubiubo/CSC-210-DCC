@@ -13,9 +13,15 @@ import json
 
 cgitb.enable()
 
+messageInfo = cgi.FieldStorage()
+
+content = messageInfo['RepId'].value
+
+
+
 conn = mysql.connector.connect(user='DCC', password='abcd', database='Ocean')
 cursor = conn.cursor()
-query = "SELECT Title, Data, UnameSent, Posttime, ReplyId FROM Messages ORDER BY RAND() LIMIT 1"
+query = "SELECT Title, Data, UnameSent, Posttime, ReplyId FROM Replies WHERE ReplyId='"+content+"'"
 cursor.execute(query)
 result = cursor.fetchall()
 result = result[0]

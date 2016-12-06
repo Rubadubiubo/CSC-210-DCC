@@ -32,11 +32,9 @@
 						
 								<!--<select name="menu-links" onchange="javascript:parent.location=this.options[this.selectedIndex].value;"> Performs action upon selection-->
 								<select id="menu-links">
-									<option value="/testtheme.php"></option>
 									<option value="/account_details.php">My account</option>
 									<option value="">Send a bottle</option>
 									<option value="">Recieve a bottle</option>
-									<option value="https://lh3.googleusercontent.com/-2rj78ZwMvmA/AAAAAAAAAAI/AAAAAAAAAA8/fvpmcm1iITA/photo.jpg">DEARGODLETMELIVE</option>
 									<option value="/learn_more.php">Learn More</option>
 								</select>
 								<button id="confirm_menu" class="button">Confirm</button>				
@@ -142,10 +140,15 @@
 		// });
 
 		// $('.post-container .title').click(eventHandler).find(".post-container .title").hide();
-				$(function pullReplies(RepId, title){
+	
+
+		
+		$(function(){
+		//FUNCTIONS
+		function pullReplies(RepId, title){
 			var reps = RepId;
 			var test = true;
-			//while(test){
+			/*while (test){*/
 				$.ajax({
 						type: "POST",
 						dataType: "json",
@@ -169,9 +172,9 @@
 								
 								var titleText = title+"	|	By: "+user;
 								var dateText = time;
-								reps = rep;
-								if(rep != "NULL"){
-									test = true;
+								
+								if(parseInt(rep) != 0){
+									pullReplies(reps);
 								}
 								$(generatePost(titleText, message, dateText)).prependTo("#post-container").hide().fadeIn('slow'); //Generate HTML to display recieved data
 								
@@ -184,12 +187,11 @@
 			
 				});
 				
+			/*}*/
 			
-			
-			
-		});
+			}
 		
-		$(function pullMsg(){
+		function pullMsg(){
 			$.ajax({
 						type: "GET",
 						dataType: "json",
@@ -199,7 +201,7 @@
 								var message = data["Data"];
 								var user = data["UnameSent"];
 								var time = data["Posttime"];
-								var rep = data["ReplyId"]
+								var rep = data["ReplyId"];
 								
 								if (title == "") {
 									title = "---";
@@ -211,22 +213,21 @@
 								
 								var titleText = title+"	|	By: "+user;
 								var dateText = time;
-								$(generatePost(titleText, message, dateText)).prependTo("#post-container").hide().fadeIn('slow'); //Generate HTML to display recieved data
-								if(rep != "NULL"){
+								if (parseInt(rep) != 0){
 									pullReplies(rep);
 								}
+								$(generatePost(titleText, message, dateText)).prependTo("#post-container").hide().fadeIn('slow'); //Generate HTML to display recieved data
+								//alert(rep);
+								
 								
 							},
 							error: function(data, status) {
 								alert("Unable to complete request.");
 							}
 			});
-		});
+		}
 		
-
 		
-		$(function(){
-
 			// $(document).on('click', ".post-container .title", function(event) {
 				
 			// 	$(".closer").slideToggle();

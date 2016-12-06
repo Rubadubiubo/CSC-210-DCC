@@ -1,0 +1,16 @@
+2. Add something to allow the user's list of ocean shortcuts to be modified
+3. Fix minor css error with collapsing where content does not expand to fill space when collapsed
+
+
+CHANGES:
+
+	MySQL:
+		User DCC_NoPswd added
+	Users:
+		PRIMARY_KEY added to username
+	Messages:
+		Ocean column added with the Index Ocean_Index - Varchar(30)
+
+	Oceans:
+		DB with ocean names ids and dates of creation
+

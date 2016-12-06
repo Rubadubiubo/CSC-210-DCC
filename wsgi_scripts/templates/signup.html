@@ -9,8 +9,10 @@
 
 {% block content %}
 <h1>Create Account</h1>
+{% if failed == 'failed' %}
+{% endif %}
 <p id="account-creation-error" class="error">
-<form method="post" id="account_info" action="{{ url_for('signup') }}">
+<form method="post" id="account_info" action="{{ url_for('user_auth.signup_processing') }}">
 	<label for="username">Username: </label>
 	<input type="text" name="username" id="username" class="vertical-form-input">
 	<label for="password">Password: </label>
@@ -24,5 +26,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/signup_extreme_vetting.js') }}"></script>
+<script>
+{% include 'signup_extreme_vetting.js' %}
+</script>
 {% endblock %}

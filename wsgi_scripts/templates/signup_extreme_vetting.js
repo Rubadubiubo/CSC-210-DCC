@@ -20,8 +20,11 @@ $(function() {
 	});
 
 	$('#account_info').submit(function(event) {
-		username_check(event, true);  // stop event if uname is taken
-		password_check(event, true, $('#password'));  // it does not really matter which pswd field gets passed in
+		// must fix so default is prevented in the event that AT LEAST one is stopped
+		valid_pass = password_check(event, true, $('#password'));  // doesn't matter which pswd field gets passed in
+		if (valid_pass === true) {  // still a need to check the username (but can't check first because of ajax)
+			username_check(event, true);  // stop event if uname is taken
+		}
 	});
 });  // document ready
 
@@ -40,7 +43,7 @@ var username_check = function(event, preventDefault) {
 		var $uname_err = $('#username-error');
 		$uname_err.text('');  // clear previous username error to check for new one
 		$.ajax({  // perform ajax check
-			url: '../cgi-bin/uname_collisions.py',
+			url: '{{ url_for("user_auth.uname_collision_check") }}',  // this is why template is needed
 			data: {username: $('#username').val()},
 			type: 'POST',
 			dataType: 'text',
@@ -81,6 +84,7 @@ var password_check = function(event, preventDefault, $field) {
 		if (preventDefault === true) {
 			event.preventDefault();  // stop form from being submitted, if necessary
 		}
+		return false;
 	}
 
 	else if ($('#password').val() != $('#confirm-password').val()) {
@@ -88,8 +92,12 @@ var password_check = function(event, preventDefault, $field) {
 		if (preventDefault === true) {
 			event.preventDefault();  // stop form from being submitted, if necessary
 		}
+		return false;
 	}
 
-	else $pswd_err.text('');  // everything is ok
+	else {
+		$pswd_err.text('');  // everything is ok
+		return true;
+	}
 };
 

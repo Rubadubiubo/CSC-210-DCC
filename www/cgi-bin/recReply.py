@@ -21,7 +21,7 @@ content = messageInfo['RepId'].value
 
 conn = mysql.connector.connect(user='DCC', password='abcd', database='Ocean')
 cursor = conn.cursor()
-query = "SELECT Title, Data, UnameSent, Posttime, ReplyId FROM Replies WHERE ReplyId='"+content+"'"
+query = "SELECT Title, Data, Sent, Posttime, ReplyId FROM Replies WHERE ReplyId='"+content+"'"
 cursor.execute(query)
 result = cursor.fetchall()
 result = result[0]

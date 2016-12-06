@@ -2,8 +2,12 @@ body {
 	margin-left: 0;
 	margin-right: 0;
 	font-family: arial, helvetica, sans-serif;
-	min-width: 450px;
+	min-width: 480px;
 	color: #000066;
+}
+
+h1 {
+	padding-bottom: 25px;
 }
 
 header {
@@ -34,30 +38,79 @@ nav a {
 	color: #000066
 }
 
-nav a:hover {  /* Special selector: affects the color of anchor text when hovered over; */
-	color: #00cccc;
+a:hover {  /* Special selector: affects the color of anchor text when hovered over; */
+	color: #00cccc!important;
 }
-
 
 nav li {
 	display: inline-block;
-	margin-right: 20px;
+	margin-right: 15px;
+	padding: 7px;
 }
 
 nav ul {
 	list-style-type: none;
 	margin: 0 auto;
-	padding-left: 15px;
+	padding-left: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	vertical-align: middle;
 	height: 100%;
-
-
 }
 
-.content {  /* offers padding to the content of the page (body has no padding as it affects the header) */
-	padding: 0 30px 30px 30px;
-	max-width: 760px;
+textarea {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	resize: none;
+	font-family: inherit;
+	width: 100%;
+}
+
+a[role="button"] {
+	cursor: pointer;
+}
+
+#sidebar {  /* sidebar to float beside the content */
+	display: inline-block;
+	background-color: #ffffcc;
+	border-right: 1px solid #000066;
+	border-bottom: 1px solid #000066;
+	margin-top: -1px;
+	width: 240px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+/* subnav moves throughout the page using ajax */
+#subnav ul {
+	list-style-type: none;
+	padding-left: 25px;
+	padding-right: 25px;
+	margin-top: 0;
+}
+
+ul.primary > li {
+	padding-top: 15px;
+}
+
+#subnav a {
+	text-decoration: none;
+	color: #000066;
+	font-size: 12pt;
+}
+
+ul.primary > li > a {  /* add the extra data for the primary anchors (may be secondary in sublists) */
+	font-weight: bold;
+}
+
+#content {  /* offers padding to the content of the page (body has no padding as it affects the header) */
+	vertical-align: top;
+	padding: 0 30px 30px 40px;
+	max-width: 600px;
+	min-width: 360px;
 	margin: 0 auto;
+	display: inline-block;  /* this doesn't allow for the body to interact with sidebar correctly */
+	min-height: 350px;
 }
 
 .error {
@@ -69,9 +122,15 @@ nav ul {
 	font-style: italic;
 }
 
+#ocean-logo-container {
+	width: 225px;
+}
+
 #ocean-logo {
-	max-width: 225px;
+	/*max-width: 225px;  /* This can be replaced by width attribute, which has better functionality */
 	margin-left: 5px;
+	text-align: center;
+	max-width: 100%;
 }
 
 .vertical-form-input {
@@ -79,5 +138,25 @@ nav ul {
 	margin-bottom: 20px;
 }
 
+#subnav-collapse {
+	display: none;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-left: 15px;
+	text-align: center;
+	margin-left: -3px;
+}
+
+/* A class for menus that are organized horizontally and are centered */
+.horizontal-menu > li {
+	display: inline-block;
+	font-weight: bold;
+	padding: 7px 10px 7px 10px;
+}
+
+.horizontal-menu {
+	text-align: center;
+	margin-left: -10px;
+}
 
 

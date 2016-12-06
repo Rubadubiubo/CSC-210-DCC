@@ -1,0 +1,47 @@
+h2#ocean-viewer-title {
+	text-align: center;
+}
+
+#ocean-viewer-display {
+	width: 100%;
+}
+
+#ocean-viewer-options {
+	list-style-type: none;
+	font-weight: bold;
+	text-align: center;
+	margin-left: -15px;
+}
+
+#ocean-viewer-options > li {
+	display: inline-block;
+}
+
+#ocean-viewer-options a:hover {
+	color: #00cccc!important;
+}
+
+#viewed-message-title {
+	padding: 5px;
+	overflow: hidden;
+}
+
+#viewer-display {
+	padding: 10px;
+}
+
+#viewed-message-title {
+	text-align: center;
+	font-size: 13pt;
+	font-weight: bold;
+}
+
+.viewer-options-item {
+	padding: 7px 10px 7px 10px;
+}
+
+#viewed-message-sender {
+	font-weight: bold;
+}
+
+

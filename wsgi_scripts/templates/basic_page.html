@@ -4,7 +4,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="author" content="DCC, Inc.">
+	{% block stylesheets %}
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/dccstyles.css') }}">
+	{% endblock %}
 	<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
 	{% if jquery == True %}
 	<script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>  <!-- add jquery if required -->
@@ -16,12 +18,17 @@
 <body>
 	{% block header %}{% endblock %}
 
-	<div class="content">{% block content %}{% endblock %}</div>
+	
+	<!--{% block sidebar %}{% endblock %} comment out the space: an error in inline-block makes this necessary.  Pretty much every browser supports inline-block, so using it at this point is preferrable to usingsomething easy to control yet fallback-reliant like flex.  Flex requires a bunch of major fallbacks to deal with even older versions of firefox, let alone IE and safari.
+
+	The comment will be ended and started at the beginning and end of the sidebar to ensure no space exists.
+	--><div id="content">{% block content %}{% endblock %}</div>
 
 	{% block footer %}{% endblock %}
 
 	{% if handle_navbar == True %}  {# nav handler scripts included automatically #}
-		<script src="{{ url_for('static', filename='js/nav-handler.js') }}"></script>
+	{# This is an early name for something which now controls all the resizing for the pages #}
+		<script src="{{ url_for('static', filename='js/resize-handler.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/menu-highlighter.js') }}"></script>
 		{% if nav_menu_item_id != None %}
 			<script>

@@ -1,0 +1,413 @@
+{% extends 'user_page.html' %}
+
+{% block stylesheets %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/oceans_styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1></h1>
+
+<div id="ocean-browser-search">
+	<label id="search-bar-label" for="search-bar">Search: </label>
+	<input id="search-bar" type="text">
+</div>  <!-- ocean-browser-search -->
+
+<div id="ocean-viewer-display">
+	<h2 id="ocean-viewer-title">[Nothing To Display]</h2>
+	<ul id="ocean-viewer-options">
+		<li class="viewer-options-item"><a id="viewer-options-write" role="button">Write Message</a></li>
+		<li class="viewer-options-item"><a id="viewer-options-description" role="button">Description</a></li>
+		<li class="viewer-options-item"><a id="viewer-options-get" role="button">Get Message</a></li>
+	</ul>
+
+	<textarea id="viewed-message-title" rows="1" cols="50" maxlength="50" readonly></textarea>
+	<div id="viewed-message-sender-area">
+		<p>By: <a id="viewed-message-sender" role="button"></a></p>
+	</div>  <!-- viewed-message-sender -->
+	<textarea id="viewer-display" rows="15" cols="50" maxlength="65536" readonly></textarea>
+
+	<ul id="message-send-options" class="horizontal-menu">
+		<li><a id="message-send-send-uname" role="button">Send With Username</a></li>
+		<li><a id="message-send-send-anon" role="button">Send Anonymously</a></li>
+		<li><a id="message-send-cancel" role="button">Cancel</a></li>
+	</ul>
+</div>
+
+<div id="ocean-saved-messages">
+	<!-- for now this will just be a table of messages the user has saved -->
+	<table id="saved-messages-table">
+		<tr>
+			<th>Title</th>
+			<th>Sender</th>
+			<th>Message</th>
+			<th>Date Saved</th>
+			<th>Date Sent</th>
+		</tr>
+		<div id="saved-message-rows"></div>  <!-- rows with saved message data go in here -->
+	</table>
+	<ul id="saved-message-page-nav" class="horizontal-menu">
+		<li><a id="saved-message-prev-page">&lt;&nbsp;Prev</a></li>
+		<li><a id="saved-message-next-page">Next&nbsp;&gt;</a></li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{{ super() }}
+
+<script>  // adds click listeners & highlighters to the buttons
+
+/*
+ * This contains variables that describe the state of the page and what is highlighted, etc.
+ */
+var stateData = {highlighted:
+ 	{% if default == 'browse' %}
+		'oceans-submenu-browse'
+	{% elif default == 'viewer' %}
+		'oceans-submenu-viewer'
+	{% endif %},
+	viewed_ocean: '[none]',  // default
+	highlighted_view_option: 'viewer-options-description',  // defualt
+	viewer_loaded: false,
+	username: "{{ uname }}",
+	saved_message_page: 1,  // the initial page of the table containing the data is the first one
+	total_saved_message_pages: 1  // default: 0 messages means one (empty) page
+} 
+
+// find the default argument to be loaded
+
+highlightMenuItemFromId(stateData['highlighted']);  // default highlighted submenu item when page is loaded
+highlightMenuItemFromId(stateData['highlighted_view_option']);
+
+function arr_diff(arr1, arr2) {  // arr1 - arr2
+	// diff function for arrays, used to prevent backwards compatibility issues later on (cannot use filter in ie8-)
+	var a = [], diff=[];
+	for (var i=0; i<arr1.length; i++) {
+		a[arr1[i]] = arr1[i];
+	}
+
+	for (var i=0; i<arr2.length; i++) {
+		if (arr2[i] in a) {  // has already been added to a
+			delete a[arr2[i]];
+		}  // otherwise can stay in
+	}
+
+	for (var i in a) {
+		/* this MUST use a[i] and NOT i becuase js converts all object keys into strings, so using i will
+		 * use a string rather than the original type of i. */
+		diff.push(a[i]);
+	}
+
+	return diff;
+}
+
+Array.prototype.containsValue = function(obj) {
+	for (var i=0; i<this.length; i++) {
+		if (this[i] === obj) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+$(function() {
+	/* Since this page is largely created using ajax and javascript in order to allow simple navigation
+	 * within the page without reloading, we need to add click handlers to all of the different possible
+	 * links so they "navigate" the way we want */
+
+	// elements that can be changed (should be changed to display: none if unused
+	var useable_selectors = ["h1", "#ocean-browser-search", "#ocean-viewer-display", "#ocean-saved-messages"];
+
+	function show_selectors(arr) {
+		// shows an array of selectors based on their desired default display properties
+
+		// Objects that should have display set to block
+		var block_selectors = ['h1', '#ocean-browser-search', '#ocean-viewer-display'];
+		for (var i=0; i<block_selectors.length; i++) {
+			var obj = block_selectors[i];
+			if (arr.containsValue(obj)) {
+				$(obj).css("display", "block");
+			}
+		}
+	}
+
+	function hide_selectors(arr) {
+		// the opposite function; just sets every element of the list to dislay: none
+		var $selectors = $([]);  // empty jQuery element (empty array matches nothing)
+		for (var i=0; i<arr.length; i++) {
+			$selectors = $selectors.add(arr[i]);  // add elements to jQuery element
+		}
+		$selectors.css("display", "none");
+	}
+
+	function prepare_document(used_selectors) {
+		// combines the two functions to prepare the document
+		show_selectors(used_selectors);
+		hide_selectors(arr_diff(useable_selectors, used_selectors));
+	}
+
+	function ajax_failed(function_name) {
+		// returns function printing out the appropriate message
+		return function (request) {
+			console.log('ERROR: Getting ajax data failed in function ' + function_name + '.');
+			console.log('Request: %s', request.toString());
+		}
+	}
+
+	function highlightMenuItem(id_no_hashtag, stateDataItem) {
+		if (stateData[stateDataItem] != id_no_hashtag) {
+			$('#'+stateData[stateDataItem]).css('color', '#000066');  // unhighlight the old menu item
+			$('#'+id_no_hashtag).css('color', '#00cccc');  // highlight the new item
+			stateData[stateDataItem] = id_no_hashtag;  // change the document variable
+		}  // otherwise no need to do anything
+	}
+
+
+	/* Browser Handling */
+
+	var browser_h1_html = "Ocean Browser";
+
+	function load_browse() {
+		highlightMenuItem('oceans-submenu-browse', 'highlighted');
+
+		var used_selectors = ["h1", "#ocean-browser-search"];
+		prepare_document(used_selectors);
+
+		$("h1").html(browser_h1_html);  // h1 title (for now this is all)
+	}
+
+	$("#oceans-submenu-browse").click(function (event) {
+		load_browse();
+	});
+
+
+	/* Viewer Handling */
+
+	var viewer_h1_html = "Ocean Viewer";
+
+	function load_message_writer() {
+		highlightMenuItem('viewer-options-write', 'highlighted_view_option');
+
+		var $viewer_display = $('#viewer-display');
+		var $viewed_message_title = $('#viewed-message-title');
+		$viewer_display.val("");
+		$viewed_message_title.val("");
+		$viewer_display.attr("readonly", false);  // so can be edited
+		$viewed_message_title.css("display", "block");
+		$viewed_message_title.attr("readonly", false);
+		$('#ocean-viewer-options').css('display', 'block');
+		$('#message-send-options').css("display", "block");
+		$('#viewed-message-sender-area').css("display", "none");
+	}
+
+	/* Add the message writer load function as a click listener and appropriate click listeners to the
+		message send buttons */
+	$('#viewer-options-write').click(function (event) {
+		load_message_writer();
+	});
+
+	$('#message-send-send-uname, #message-send-send-anon').click(function (event) {
+		var uname = "";  // will remain empty in the case of anonymity being selected
+		if ($(this).attr("id").indexOf("uname") != -1) {  // must send username
+			uname = stateData["username"];
+		}
+
+		$.ajax({
+			url: '{{ url_for("ocean_handler.send_message") }}',
+			data: {ocean_name: stateData['viewed_ocean'], message_title: $('#viewed-message-title').val(),
+				message_text: $('#viewer-display').val(), user_sent: uname},
+			type: 'POST',
+			dataType: 'text',
+			success: function (data) {
+				if (data !== 'failure') {
+					window.alert('Message sent successfully.');
+					load_description();
+				}
+				else {
+					window.alert('Message was not sent because the ocean was not found.  The ocean may have' +
+						' been deleted.');
+					// reset the message viewer
+					load_description();  // will load an error page
+				}
+			},
+			error: ajax_failed('#message-send-send click function')
+		});
+	});
+
+	$('#message-send-cancel').click(function (event) {
+		// just load the description again
+		load_description()
+	});
+
+	function load_description() {
+		highlightMenuItem('viewer-options-description', 'highlighted_view_option');
+
+		var $viewer_display = $('#viewer-display');
+		var $viewed_message_title = $('#viewed-message-title');
+		$viewed_message_title.css("display", "none");
+		$viewer_display.attr('readonly', true);
+		$viewed_message_title.attr('readonly', true);
+		$('#ocean-viewer-options').css('display', 'block');
+		$('#message-send-options').css('display', 'none');
+		$('#viewed-message-sender-area').css("display", "none");
+
+
+		$.ajax({
+			url: '{{ url_for("ocean_handler.get_ocean_description") }}',
+			data: {ocean_name: stateData['viewed_ocean']},
+			type: 'POST',
+			dataType: 'json',
+			success: function (data) {
+				if (data['ocean'] === "[none]") {
+					$('#ocean-viewer-title').html('[ERROR: Ocean Not Found]');
+					$('#ocean-viewer-options').css("display", "none");
+					$('#viewer-display').val("Either the ocean you attempted to access does not exist or you have not attempted to load an ocean.");
+				} else {
+					$('#ocean-viewer-title').html(stateData['viewed_ocean']);
+					$viewer_display.val(data['description']);
+				}
+			},
+			error: ajax_failed("load_description")
+		});  // end ajax
+	}
+
+	$('#viewer-options-description').click(function (event) {
+		load_description();
+	});
+
+	function load_message_getter() {
+		highlightMenuItem('viewer-options-get', 'highlighted_view_option');
+
+		var $viewer_display = $('#viewer-display');
+		var $viewed_message_title = $('#viewed-message-title');
+		$viewer_display.attr('readonly', true);
+		$viewed_message_title.css('display', 'block');
+		$viewed_message_title.attr('readonly', true);
+		$('#ocean-viewer-options').css('display', 'block');
+		$('#message-send-options').css('display', 'none');
+		var $sender_area = $('#viewed-message-sender-area');
+		$sender_area.css("display", "none");
+		// ^ ^ ^ initially should be invisible (until message is received)
+
+		$.ajax({
+			url: '{{ url_for("ocean_handler.get_message") }}',
+			data: {ocean_name: stateData['viewed_ocean']},
+			type: 'POST',
+			dataType: 'json',
+			success: function (data) {
+				if (data['status'] === "failure") {
+					window.alert('Message was not received because the ocean was not found.  The ocean may have' +
+						' been deleted.');
+					// reset the message viewer
+					load_description();  // will load an error page
+				} else if (data['status'] === "no messages") {
+					load_description();
+					window.alert('Message was not received because the ocean is empty.');
+				} else {
+					$viewed_message_title.val(data['title']);
+					$viewer_display.val(data['data']);
+					if (data['sender'] !== "") {  // must reveal the viewed-message-sender-area
+						$("#viewed-message-sender").html(data['sender'] + " (Open Chat)");
+						$sender_area.css("display", "block");  // to reveal the sender
+					}  // otherwise do nothing; sender area is already hidden
+				}
+			},
+			error: ajax_failed('load_message_getter')
+		});  // end ajax
+	}
+
+	$('#viewer-options-get').click(function (event) {
+		load_message_getter();
+	});
+
+	function load_viewer(ocean, ocean_location_option, referrer_data) {
+		/*
+		 * Note that this is only for initially loading the subpage; another script is
+		 * required for returning to the subpage with data already on it.
+		 *
+		 * This is because it is necessary to jump directly to an ocean if it is clicked on.
+		 * The method may be modified in the future to allow for jumping directly to a send message area.
+		 *
+		 * referrer_data sends info about what sent the request to the function.  If it was a
+		 * short-menu ocean item and the ocean does not exist, that menu item should be removed.
+		 *
+		 * ocean_location_option should be a function that loads the correct option
+		 */
+		stateData["viewed_ocean"] = ocean;  // set the ocean to be viewed
+
+		highlightMenuItem('oceans-submenu-viewer', 'highlighted');
+
+		var used_selectors = ["h1", "#ocean-viewer-display", "#ocean-viewer-title"];
+		prepare_document(used_selectors);
+
+		$('h1').html(viewer_h1_html);
+		$("#viewer-display").val("");
+		$('#ocean-viewer-title').html("Loading...");
+		if (typeof ocean_location_option === "undefined") {  // no option has been supplied
+			ocean_location_option = load_description;  // default to description
+		}
+		ocean_location_option();
+		stateData["viewer_loaded"] = true;  // so program knows viewer has been loaded
+	}
+
+	function reload_viewer() {
+		/* simply reloads the parts of the page needed for the viewer without changing anything */
+
+		highlightMenuItem('oceans-submenu-viewer', 'highlighted');
+
+		var used_selectors = ["h1", "#ocean-viewer-display"];
+		prepare_document(used_selectors);
+		$('h1').html(viewer_h1_html);
+	}
+
+	$('#oceans-submenu-viewer').click(function (event) {
+		if (stateData["viewer_loaded"] === false) {
+			load_viewer(stateData["viewed_ocean"]);
+		} else {
+			reload_viewer();
+		}
+	});
+
+	function load_saved_messages_table() {
+		var used_selectors = null;
+	}
+
+
+	/* Ocean View Shortcut Handling */
+	function getOceanNameFromId(id_no_hashtag) {
+		/* get the ocean name from the id of the submenu item */
+		return id_no_hashtag.slice(21);
+	}
+
+	$('.oceans-submenu-ocean').click(function (event) {
+		load_viewer(getOceanNameFromId($(this).attr('id')), load_description);
+	});
+
+	$('#viewer-options').click(function (event) {
+		var $this = $(this);
+		var id_no_hashtag = $this.attr('id');
+		if (highlighted_view_option != id_no_hashtag) {
+			$('#'+highlighted_view_option).css('color', '#000066');
+			$this.css('color', '#00cccc');
+			highlighted_view_option = id_no_hashtag;
+		}
+	});
+
+	// determine which function to load at beginning in order to set the page correctly initially
+	if (stateData['highlighted'] === 'oceans-submenu-browse') {
+		load_browse();
+	} else if (stateData['highlighted'] === 'oceans-submenu-viewer') {
+		load_viewer();
+	}
+
+});  // end function()
+
+</script>
+
+{% endblock %}
+
+
+

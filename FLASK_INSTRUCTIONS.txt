@@ -1,0 +1,45 @@
+List of stuff that needs to be installed:
+
+$ <pip or path/to/pip/version> install flask
+
+I would use the python installation in your AMPPS installation if you have one.  In any case, make sure it is Python 3.5 you're installing on and using, because everything is written for 3.5.
+
+
+The db needs to be changed in the following way so that the tables are the following:
+
+Messages:
+	Title - varchar(50)
+	Data - text
+	UnameTo - varchar(30)  < this column is actually not used (yet) >
+	UnameSent - varchar(30)
+	mID - bigint(20)  < UNSIGNED >  < A_I >
+	Ocean - varchar(30)  < INDEX Ocean >
+	DateSent - datetime
+	RatingData - varchar(30)  < this column is actually not used (yet) >
+
+Oceans:
+	Name - varchar(30)  < PRIMARY_KEY >
+	ID - bigint(20)  < UNSIGNED >  < A_I >
+	DateCreated - datetime
+	Description - text
+
+I think users is the same.
+
+User_Login_Keys:
+	CookiePass - varchar(100)
+	CookieSalt - varchar(100)
+	DateAccessed - datetime  < INDEX DateAccessed >
+	LoginId - varchar(30)  < PRIMARY_KEY >
+	Username - varchar(30)
+
+User_Saved_Messages:
+	Username - varchar(30)
+	Title - varchar(50)
+	Data - text
+	OceanFrom - varchar(30)
+	DateSaved - datetime  < PRIMARY_KEY >
+	DateSent - datetime
+
+
+
+

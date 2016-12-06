@@ -15,10 +15,10 @@
 {% endif %}
 <form id="login" method="POST" action="{{ url_for('user_auth.login_processing') }}">
 	<label for="username">Username: </label>
-	<input type="text" name="username" id="username" class="vertical-form-input">
+	<input type="text" name="username" id="username" class="vertical-form-input" maxlength="30">
 
 	<label for="password">Password: </label>
-	<input type="password" name="password" id="password" class="vertical-form-input">
+	<input type="password" name="password" id="password" class="vertical-form-input" maxlength="30">
 
 	<input type="submit" value="Login">
 </form>

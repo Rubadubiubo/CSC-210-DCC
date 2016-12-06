@@ -22,7 +22,7 @@ def generateLoginCookieHeader(username):
 	# make the expiration date
 	expDate = datetime.datetime.utcnow() + datetime.timedelta(days=login_cookie_expiration_days)
 	cookie['previous_login']['expires'] = expDate.strftime(cookie_time_string)
-	cookie['previous_login']['httponly'] = False  # stop client-side scripts from accessing cookie
+	cookie['previous_login']['httponly'] = True  # stop client-side scripts from accessing cookie
 	print(cookie)
 
 
